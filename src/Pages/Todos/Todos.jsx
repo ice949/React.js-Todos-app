@@ -5,7 +5,7 @@ import { TiTick } from "react-icons/ti";
 import { auth } from "../../firebase/config";
 import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { doc, setDoc, updateDoc } from "firebase/firestore";
+import { doc, setDoc, updateDoc, deleteDoc, query, collection, onSnapshot } from "firebase/firestore";
 import { db } from "../../firebase/config";
 import { onAuthStateChanged } from "firebase/auth";
 
@@ -15,10 +15,7 @@ const Todos = () => {
   const [todo, setTodo] = useState("");
   const [updatedTodo, setUpdatedTodo] = useState("");
   const [todos, setTodos] = useState([
-    "Learn React",
-    "Learn Redux",
-    "Learn React Router",
-    "Learn React Hooks",
+   {}
   ]);
 
   const addTodo = async (e) => {
@@ -27,16 +24,34 @@ const Todos = () => {
     await setDoc(doc(db, `mytodos${userEmail}`, id), {
       todo: todo,
       id: id,
+      isCompleted: false,
     });
   };
 
-  // const updateTodo = async (id, updatedTodo) => {
+  const getTodos = async () => {
+    const q = query(collection(db, `mytodos${userEmail}`,));
+      const unSubscribe = onSnapshot(q, (querySnapshot) => {
+        let todosArr = [];
+        querySnapshot.forEach((doc) => {
+          todosArr.push({ ...doc.data(), id: doc.id });
+        });
+        // let anArr = userProductsArr.slice(-6)
+        setTodos(todosArr);
+      });
+      return () => unSubscribe();
+  }
+
+  // const editTodo = async (id, updatedTodo) => {
   //   const todoRef = doc(db, `mytodos${userEmail}`, id);
 
   //   await updateDoc(todoRef, {
   //     todo: updatedTodo,
   //   });
   // };
+
+  // const deleteTodo = async (id) => {
+  //   await deleteDoc(doc(db, `mytodos${userEmail}`, id));
+  // }
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -45,6 +60,10 @@ const Todos = () => {
       }
     });
   }, []);
+
+  useEffect(() => {
+    getTodos()
+  }, [userEmail]);
 
   const signout = async () => {
     signOut(auth)
@@ -81,7 +100,7 @@ const Todos = () => {
         <ul>
           {todos.map((todo, index) => (
             <li key={index}>
-              {todo}
+              {todo.todo}
               <div className="actions">
                 <button type="button" className="plain-btn blue">
                   <FaEdit />
@@ -89,7 +108,7 @@ const Todos = () => {
                 <button type="button" className="plain-btn green">
                   <TiTick />
                 </button>
-                <button type="button" className="plain-btn red">
+                <button type="button" className="plain-btn red" onClick={() => {deleteTodo(todo.id)}}>
                   <FaTimes />
                 </button>
               </div>
