@@ -1,15 +1,39 @@
 import React, {useState} from 'react';
 import './Login.css';
 import { FaGoogle } from "react-icons/fa";
+import { auth } from "../../firebase/config";
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
+
 
 const Login = () => {
     
         const [email, setEmail] = useState('');
         const [password, setPassword] = useState('');
+
+        const navigate = useNavigate();
+
+  const login = async (e) => {
+    e.preventDefault();
+   
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed up
+        const user = userCredential.user;
+        navigate("/todos");
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // ..
+      });
+  };
+
   return (
     <div className="Signup">
 
-      <form className="signup-form">
+      <form className="signup-form" onSubmit={(e) => {login(e)}}>
 
         <h2>SIGN IN</h2>
 

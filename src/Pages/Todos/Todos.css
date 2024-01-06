@@ -7,13 +7,23 @@
     height: 100%;
     min-height: 100vh;
     padding: 20px;
+    background-image: url("../../Assets/bg.jpeg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.Todos h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #fff;
 }
 
 .add-todo-form {
     width: 100%;
     max-width: 500px;
     padding: 20px;
-    background-color: #fff;
+    background-color: rgb(255, 255, 255, 0.5);
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     display: flex;
@@ -49,7 +59,7 @@
     width: 100%;
     max-width: 500px;
     padding: 20px;
-    background-color: #fff;
+    background-color: rgb(255, 255, 255, 0.5);
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     display: flex;
@@ -65,13 +75,21 @@
 }
 
 .todos li {
+    
+    list-style: none;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.todos .todo {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 20px;
-    list-style: none;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    padding: 10px;
 }
 
 .actions {
@@ -105,4 +123,38 @@
     border-color: #007bff;
     color: #007bff;
     padding: 6px;
+}
+
+.edit-input {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+.edit-input input {
+    width: 80%;
+    height: 40px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding: 0 10px;
+}
+
+.signout-btn {
+    background-color: #f50a0a;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    color: #fff;
+    padding: 10px 20px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+}
+
+.completed {
+    text-decoration: line-through;
+    color: #28a745;
 }
