@@ -41,9 +41,15 @@ const Todos = () => {
       return () => unSubscribe();
   }
 
+  const completeTodo = async (id) => {
+    const todoRef = doc(db, `mytodos${userEmail}`, id);
+    await updateDoc(todoRef, {
+      isCompleted: true,
+    });
+  };
+
   // const editTodo = async (id, updatedTodo) => {
   //   const todoRef = doc(db, `mytodos${userEmail}`, id);
-
   //   await updateDoc(todoRef, {
   //     todo: updatedTodo,
   //   });
