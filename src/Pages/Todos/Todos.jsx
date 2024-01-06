@@ -158,12 +158,12 @@ const Todos = () => {
               <div className="todo">
                 {todo.todo}
                 <div className="actions">
-                  <button type="button" className="plain-btn blue" onClick={openModal}>
+                  <button type="button" className="plain-bt blue" onClick={openModal}>
                     <FaEdit />
                   </button>
                   <button
                     type="button"
-                    className="plain-btn green"
+                    className="plain-bt green"
                     onClick={() => {
                       completeTodo(todo.id, todo.isCompleted);
                     }}
@@ -172,7 +172,7 @@ const Todos = () => {
                   </button>
                   <button
                     type="button"
-                    className="plain-btn red"
+                    className="plain-bt red"
                     onClick={() => {
                       deleteTodo(todo.id);
                     }}
