@@ -55,9 +55,9 @@ const Todos = () => {
   //   });
   // };
 
-  // const deleteTodo = async (id) => {
-  //   await deleteDoc(doc(db, `mytodos${userEmail}`, id));
-  // }
+  const deleteTodo = async (id) => {
+    await deleteDoc(doc(db, `mytodos${userEmail}`, id));
+  }
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
