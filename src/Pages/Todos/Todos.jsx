@@ -2,8 +2,12 @@ import React, { useState } from "react";
 import "./Todos.css";
 import { FaPlus, FaTimes, FaEdit } from "react-icons/fa";
 import { TiTick } from "react-icons/ti";
+import { auth } from "../../firebase/config";
+import { signOut } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 
 const Todos = () => {
+  const navigate = useNavigate()
   const [todo, setTodo] = useState("");
   const [todos, setTodos] = useState([
     "Learn React",
@@ -11,6 +15,17 @@ const Todos = () => {
     "Learn React Router",
     "Learn React Hooks",
   ]);
+
+  const signout = async () => {
+    signOut(auth)
+      .then(() => {
+        // Sign-out successful.
+        navigate("/login");
+      })
+      .catch((error) => {
+        // An error happened.
+      });
+  }
 
   return (
     <div className="Todos">
@@ -46,6 +61,7 @@ const Todos = () => {
             </li>
           ))}
         </ul>
+        <button type="button" className="signout-btn" onClick={() => {signout()}} >Signout</button>
       </div>
     </div>
   );
