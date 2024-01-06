@@ -5,7 +5,15 @@ import { TiTick } from "react-icons/ti";
 import { auth } from "../../firebase/config";
 import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { doc, setDoc, updateDoc, deleteDoc, query, collection, onSnapshot } from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  updateDoc,
+  deleteDoc,
+  query,
+  collection,
+  onSnapshot,
+} from "firebase/firestore";
 import { db } from "../../firebase/config";
 import { onAuthStateChanged } from "firebase/auth";
 
@@ -14,9 +22,7 @@ const Todos = () => {
   const [userEmail, setUserEmail] = useState("");
   const [todo, setTodo] = useState("");
   const [updatedTodo, setUpdatedTodo] = useState("");
-  const [todos, setTodos] = useState([
-   {}
-  ]);
+  const [todos, setTodos] = useState([{}]);
 
   const addTodo = async (e) => {
     e.preventDefault();
@@ -26,38 +32,48 @@ const Todos = () => {
       id: id,
       isCompleted: false,
     });
+    setTodo("");
   };
 
   const getTodos = async () => {
-    const q = query(collection(db, `mytodos${userEmail}`,));
-      const unSubscribe = onSnapshot(q, (querySnapshot) => {
-        let todosArr = [];
-        querySnapshot.forEach((doc) => {
-          todosArr.push({ ...doc.data(), id: doc.id });
-        });
-        // let anArr = userProductsArr.slice(-6)
-        setTodos(todosArr);
+    const q = query(collection(db, `mytodos${userEmail}`));
+    const unSubscribe = onSnapshot(q, (querySnapshot) => {
+      let todosArr = [];
+      querySnapshot.forEach((doc) => {
+        todosArr.push({ ...doc.data(), id: doc.id });
       });
-      return () => unSubscribe();
-  }
+      // let anArr = userProductsArr.slice(-6)
+      setTodos(todosArr);
+    });
+    return () => unSubscribe();
+  };
 
-  const completeTodo = async (id) => {
+  const completeTodo = async (id, state) => {
+    if (state) {
+      const newOne = false;
+      const todoRef = doc(db, `mytodos${userEmail}`, id);
+      await updateDoc(todoRef, {
+        isCompleted: newOne,
+      });
+    } else {
+      const newOne = true;
+      const todoRef = doc(db, `mytodos${userEmail}`, id);
+      await updateDoc(todoRef, {
+        isCompleted: newOne,
+      });
+    }
+  };
+
+  const editTodo = async (id, updatedTodo) => {
     const todoRef = doc(db, `mytodos${userEmail}`, id);
     await updateDoc(todoRef, {
-      isCompleted: true,
+      todo: updatedTodo,
     });
   };
 
-  // const editTodo = async (id, updatedTodo) => {
-  //   const todoRef = doc(db, `mytodos${userEmail}`, id);
-  //   await updateDoc(todoRef, {
-  //     todo: updatedTodo,
-  //   });
-  // };
-
   const deleteTodo = async (id) => {
     await deleteDoc(doc(db, `mytodos${userEmail}`, id));
-  }
+  };
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -68,7 +84,7 @@ const Todos = () => {
   }, []);
 
   useEffect(() => {
-    getTodos()
+    getTodos();
   }, [userEmail]);
 
   const signout = async () => {
@@ -105,17 +121,47 @@ const Todos = () => {
         <h3>Todos</h3>
         <ul>
           {todos.map((todo, index) => (
-            <li key={index}>
-              {todo.todo}
-              <div className="actions">
-                <button type="button" className="plain-btn blue">
+            <li key={index} className={todo.isCompleted ? "completed" : ""}>
+              <div className="todo">
+                {todo.todo}
+                <div className="actions">
+                  <button type="button" className="plain-btn blue">
+                    <FaEdit />
+                  </button>
+                  <button
+                    type="button"
+                    className="plain-btn green"
+                    onClick={() => {
+                      completeTodo(todo.id, todo.isCompleted);
+                    }}
+                  >
+                    <TiTick />
+                  </button>
+                  <button
+                    type="button"
+                    className="plain-btn red"
+                    onClick={() => {
+                      deleteTodo(todo.id);
+                    }}
+                  >
+                    <FaTimes />
+                  </button>
+                </div>
+              </div>
+              <div className="edit-input">
+                <input
+                  type="text"
+                  value={updatedTodo}
+                  onChange={(e) => setUpdatedTodo(e.target.value)}
+                />
+                <button
+                  type="button"
+                  className="plain-btn"
+                  onClick={() => {
+                    editTodo(todo.id, updatedTodo);
+                  }}
+                >
                   <FaEdit />
-                </button>
-                <button type="button" className="plain-btn green">
-                  <TiTick />
-                </button>
-                <button type="button" className="plain-btn red" onClick={() => {deleteTodo(todo.id)}}>
-                  <FaTimes />
                 </button>
               </div>
             </li>
