@@ -16,6 +16,20 @@ import {
 } from "firebase/firestore";
 import { db } from "../../firebase/config";
 import { onAuthStateChanged } from "firebase/auth";
+import ReactDOM from 'react-dom';
+import Modal from 'react-modal';
+
+
+const customStyles = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+  },
+};
 
 const Todos = () => {
   const navigate = useNavigate();
@@ -69,6 +83,8 @@ const Todos = () => {
     await updateDoc(todoRef, {
       todo: updatedTodo,
     });
+    setUpdatedTodo("");
+    closeModal();
   };
 
   const deleteTodo = async (id) => {
@@ -98,6 +114,23 @@ const Todos = () => {
       });
   };
 
+
+  let subtitle;
+  const [modalIsOpen, setIsOpen] = React.useState(false);
+
+  function openModal() {
+    setIsOpen(true);
+  }
+
+  function afterOpenModal() {
+    // references are now sync'd and can be accessed.
+    subtitle.style.color = '#f00';
+  }
+
+  function closeModal() {
+    setIsOpen(false);
+  }
+
   return (
     <div className="Todos">
       <h2>Todo List</h2>
@@ -125,7 +158,7 @@ const Todos = () => {
               <div className="todo">
                 {todo.todo}
                 <div className="actions">
-                  <button type="button" className="plain-btn blue">
+                  <button type="button" className="plain-btn blue" onClick={openModal}>
                     <FaEdit />
                   </button>
                   <button
@@ -148,7 +181,18 @@ const Todos = () => {
                   </button>
                 </div>
               </div>
-              <div className="edit-input">
+
+              <Modal
+        isOpen={modalIsOpen}
+        onAfterOpen={afterOpenModal}
+        onRequestClose={closeModal}
+        style={customStyles}
+        contentLabel="Example Modal"
+      >
+        <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Edit Todo</h2>
+        {/* <button onClick={closeModal}>close</button> */}
+        
+        <div className="edit-input">
                 <input
                   type="text"
                   value={updatedTodo}
@@ -164,6 +208,8 @@ const Todos = () => {
                   <FaEdit />
                 </button>
               </div>
+      </Modal>
+              
             </li>
           ))}
         </ul>
