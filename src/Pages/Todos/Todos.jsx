@@ -16,7 +16,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../../firebase/config";
 import { onAuthStateChanged } from "firebase/auth";
-import ReactDOM from 'react-dom';
+import { DragDropContext } from 'react-beautiful-dnd';
 import Modal from 'react-modal';
 
 
@@ -152,7 +152,7 @@ const Todos = () => {
       </form>
       <div className="todos">
         <h3>Todos</h3>
-        <ul>
+        <DragDropContext>
           {todos.map((todo, index) => (
             <li key={index} className={todo.isCompleted ? "completed" : ""}>
               <div className="todo">
@@ -212,7 +212,7 @@ const Todos = () => {
               
             </li>
           ))}
-        </ul>
+        </DragDropContext>
         <button
           type="button"
           className="signout-btn"
